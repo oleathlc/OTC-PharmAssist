@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   Alert,
-  Linking,
   Dimensions,
   LayoutAnimation,
   Text,
@@ -11,6 +10,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { BarCodeScanner, Permissions } from 'expo';
+
 
 export default class LinksScreen extends React.Component {
   static navigationOptions = {
@@ -38,6 +38,7 @@ export default class LinksScreen extends React.Component {
       this.setState({ lastScannedUrl: result.data });
     }
   };
+
 render() {
     return (
       <View style={styles.container}>
@@ -65,12 +66,14 @@ render() {
 
   _handlePressUrl = () => {
     Alert.alert(
-      'Open this URL?',
+      'Add reminders for this prescription?',
       this.state.lastScannedUrl,
       [
         {
           text: 'Yes',
-          onPress: () => Linking.openURL(this.state.lastScannedUrl),
+          onPress: () => this.props.navigation.navigate('Home',{
+            qrCode: this.state.lastScannedUrl,
+          })
         },
         { text: 'No', onPress: () => {} },
       ],

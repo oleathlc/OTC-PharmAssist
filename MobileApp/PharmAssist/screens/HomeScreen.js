@@ -8,20 +8,29 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { WebBrowser } from 'expo';
-
+import MyMeds from '../components/MyMedsTab';
 import { MonoText } from '../components/StyledText';
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
     title: 'My Prescriptions'
   };
+  constructor(props){
+    super(props);
+
+    this.state = {
+      qrCode : null,
+    }
+  }
 
   render() {
+    //const { navigation } = this.props;
+    var itemId = this.props.navigation.getParam('qrCode', 'gfdgf');
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-
+        <MyMeds></MyMeds>
+        <Text>{itemId}</Text>
         </ScrollView>
       </View>
     );
