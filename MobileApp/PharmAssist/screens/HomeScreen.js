@@ -8,12 +8,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import MyMeds from '../components/MyMedsTab';
+import MyMeds from '../components/MyMeds';
 import { MonoText } from '../components/StyledText';
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
-    title: 'My Prescriptions'
+    title: 'PharmAssist'
   };
   constructor(props){
     super(props);
