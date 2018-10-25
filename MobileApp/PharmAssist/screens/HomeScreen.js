@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Button,
   Image,
   Platform,
   ScrollView,
@@ -10,6 +11,7 @@ import {
 } from 'react-native';
 import MyMeds from '../components/MyMeds';
 import { MonoText } from '../components/StyledText';
+import moment from 'moment';
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -17,14 +19,36 @@ export default class HomeScreen extends React.Component {
   };
   constructor(props){
     super(props);
+    const currentDate = moment(new Date);
 
     this.state = {
       qrCode : null,
     }
   }
+  componentDidMount() {
+  // ...
+  if (Platform.OS === 'android') {
+    Expo.Notifications.createChannelAndroidAsync('reminders', {
+          name: 'Reminders',
+          priority: 'max',
+          vibrate: [0, 250, 250, 250],
+          sound: true,
+        });
+      }
+    }
+
+  _createNotificationAsync = () => {
+    Expo.Notifications.presentLocalNotificationAsync({
+        title: 'Reminder',
+        body: 'This is an important reminder!!!!',
+        android: {
+          channelId: 'reminders',
+          color: '#FF0000',
+        },
+      });
+    }
 
   render() {
-    //const { navigation } = this.props;
     var itemId = this.props.navigation.getParam('qrCode', 'gfdgf');
     return (
       <View style={styles.container}>
