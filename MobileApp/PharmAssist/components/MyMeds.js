@@ -15,15 +15,23 @@ export default class MyMeds extends React.Component {
   
   constructor(props){
     super(props);
-    const currentDate = moment(new Date);//.format('DD-MM');
-    const setDate = moment(new Date(2018,10,11));
-    const timeDiff = setDate.diff(currentDate,'days');
-
     this.state = {
-      days : timeDiff,
-      initDate: currentDate.format('DD-MM'),
-      endDate: setDate.format('DD-MM'),
+      days : null,
+      qrCode : null
     }
+  }
+
+  componentDidUpdate() {
+      render()
+      this.parseCode(this.props.qrCode);
+  }
+  
+  parseCode(code) {
+      var numDays = parseInt(code.substring(0, 2));
+      this.setState({
+        qrCode:code,
+        days:numDays 
+      })
   }
 
   render() {
