@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Button, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity,View,} from 'react-native';
 import MyMeds from '../components/MyMeds';
 import { MonoText } from '../components/StyledText';
 import moment from 'moment';
@@ -19,8 +10,6 @@ export default class HomeScreen extends React.Component {
   };
   constructor(props){
     super(props);
-    const currentDate = moment(new Date);
-
     this.state = {
       qrCode : null,
     }
@@ -47,14 +36,39 @@ export default class HomeScreen extends React.Component {
         },
       });
     }
+    parseCode(code) {
+      const drugList = ["Ibuprofen","","Aspirin","Atorvastatin","Amoxicillin","","","","","Bisoprolol","Paracetamol"];
+      var medList = code.split(",")
+      var medArray = []
+      medList.map((item) => {
+          var split = item.split("-")
+          var drugCode = parseInt(split[0].substring(0,2))
+          var drugStrength = split[0].substring(2)
+          medArray.push(drugList[drugCode] + " " + drugStrength +"mg")
+          //medArray.push(split[0])
+      })
+      return medArray;
+  }
 
   render() {
-    var itemId = this.props.navigation.getParam('qrCode', 'gfdgf');
+    var qrCode = this.props.navigation.getParam('qrCode', null);
+    var numDays = (qrCode != null) ? 
+        parseInt(qrCode.substring(0,2)) : null;
+    const endDate = moment(new Date).add(numDays,'days').format('DD-MM-YY')
+    var medList = (qrCode != null) ? 
+        qrCode.substring(3,qrCode.length-1) : null;
+    var medArray = (qrCode != null) ?
+        this.parseCode(medList) : null;
+    var patientView = (qrCode != null) ?
+        <View><Text>{qrCode}</Text><Text>Prescription End Date: {endDate}</Text>
+        {(medArray != null) ? medArray.map((item) => {
+          return <Text key={item}>{item}</Text>
+        }) : null}
+        </View> : null ;
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-        <MyMeds></MyMeds>
-        <Text>{itemId}</Text>
+        {patientView}
         </ScrollView>
       </View>
     );
