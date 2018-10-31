@@ -15,7 +15,6 @@ export default class HomeScreen extends React.Component {
     }
   }
   componentDidMount() {
-  // ...
   if (Platform.OS === 'android') {
     Expo.Notifications.createChannelAndroidAsync('reminders', {
           name: 'Reminders',
@@ -25,29 +24,53 @@ export default class HomeScreen extends React.Component {
         });
       }
     }
-
-  _createNotificationAsync = () => {
-    Expo.Notifications.presentLocalNotificationAsync({
-        title: 'Reminder',
-        body: 'This is an important reminder!!!!',
-        android: {
-          channelId: 'reminders',
-          color: '#FF0000',
-        },
-      });
+  parseCode(code) {
+    const drugList = ["Ibuprofen","Citalopram","Diclofenac","Atorvastatin","Amoxicillin","Paracetamol","Amlodipine","Metformin","Codeine","Bisoprolol","Aspirin"];
+    var medList = code.split(",")
+    var medArray = []
+    medList.map((item) => {
+        var split = item.split("-")
+        var drugCode = parseInt(split[0].substring(0,2))
+        var drugStrength = split[0].substring(2)
+        medArray.push(drugList[drugCode] + " " + drugStrength +"mg")
+        medArray.push(this.getTimes(split[1]))
+    })
+    return medArray;
+  }
+  getTimes(code) {
+    var time = "Take ";
+    var number = 0;
+    for (i=0; i<code.length;i++){
+      if (code[i] == "1"){
+        number+=1
+      }
     }
-    parseCode(code) {
-      const drugList = ["Ibuprofen","","Aspirin","Atorvastatin","Amoxicillin","","","","","Bisoprolol","Paracetamol"];
-      var medList = code.split(",")
-      var medArray = []
-      medList.map((item) => {
-          var split = item.split("-")
-          var drugCode = parseInt(split[0].substring(0,2))
-          var drugStrength = split[0].substring(2)
-          medArray.push(drugList[drugCode] + " " + drugStrength +"mg")
-          //medArray.push(split[0])
-      })
-      return medArray;
+    if (number == 1){
+      time+= "once daily ("
+    }
+    else if (number == 2){
+      time+= "twice daily ("
+    }
+    else if (number == 3){
+      time+= "three times daily ("
+    }
+    else {
+      time+= "four times daily ("
+    }
+    if (code[0] =='1'){
+      time += "-Morning-"
+    }
+    if (code[1] =='1'){
+      time += "-Afternoon-"
+    }
+    if (code[2] =='1'){
+      time += "-Evening-"
+    }
+    if (code[3] =='1'){
+      time += "-Night-"
+    }
+    time+=")"
+    return time
   }
 
   render() {
