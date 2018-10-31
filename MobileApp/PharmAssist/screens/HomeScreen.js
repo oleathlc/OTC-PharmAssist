@@ -25,51 +25,66 @@ export default class HomeScreen extends React.Component {
       }
     }
   parseCode(code) {
-    const drugList = ["Ibuprofen","Citalopram","Diclofenac","Atorvastatin","Amoxicillin","Paracetamol","Amlodipine","Metformin","Codeine","Bisoprolol","Aspirin"];
+    const drugList = ["Ibuprofen 200mg","Citalopram 10mg","Diclofenac 25mg","Atorvastatin 40mg","Amoxicillin 250mg","Paracetamol 500mg","Amlodipine 5mg","Metformin 850mg","Codeine 15mg","Bisoprolol 2.5mg","Aspirin 75mg"];
     var medList = code.split(",")
     var medArray = []
     medList.map((item) => {
         var split = item.split("-")
         var drugCode = parseInt(split[0].substring(0,2))
-        var drugStrength = split[0].substring(2)
-        medArray.push(drugList[drugCode] + " " + drugStrength +"mg")
+        medArray.push(drugList[drugCode])
         medArray.push(this.getTimes(split[1]))
     })
     return medArray;
   }
   getTimes(code) {
-    var time = "Take ";
-    var number = 0;
-    for (i=0; i<code.length;i++){
-      if (code[i] == "1"){
-        number+=1
-      }
+    var time;
+    switch(code){
+      case "1000":
+        time = "Take once daily in the morning"
+        break;
+      case "0100":
+        time = "Take once daily in the afternoon"
+        break;
+      case "0010":
+        time = "Take once daily in the evening"
+        break;
+      case "0001":
+        time = "Take once daily at night"
+        break;
+      case "1001":
+        time = "Take twice daily in the morning and at night"
+        break;
+      case "1010":
+        time = "Take once daily in the morning and in the evening"
+        break;
+      case "1100":
+        time = "Take twice daily in the morning and in the afternoon"
+        break;
+      case "0110":
+        time = "Take twice daily in the afternoon and in the evening"
+        break;
+      case "0101":
+        time = "Take twice daily in the afternoon and at night"
+        break;
+      case "0011":
+        time = "Take twice daily in the evening and at night"
+        break;
+      case "1101":
+        time = "Take three times daily in the morning, in the afternoon and at night"
+        break;
+      case "1011":
+        time = "Take three times daily in the morning, in the evening and at night"
+        break;
+      case "1110":
+        time = "Take three times daily in the morning, in the afternoon and in the evening"
+        break;
+      case "0111":
+        time = "Take three times daily in the afternoon, in the evening and at night"
+        break;
+      case "1111":
+        time = "Take four times daily in the morning, in the afternoon, in the evening and at night"
+        break;
     }
-    if (number == 1){
-      time+= "once daily ("
-    }
-    else if (number == 2){
-      time+= "twice daily ("
-    }
-    else if (number == 3){
-      time+= "three times daily ("
-    }
-    else {
-      time+= "four times daily ("
-    }
-    if (code[0] =='1'){
-      time += "-Morning-"
-    }
-    if (code[1] =='1'){
-      time += "-Afternoon-"
-    }
-    if (code[2] =='1'){
-      time += "-Evening-"
-    }
-    if (code[3] =='1'){
-      time += "-Night-"
-    }
-    time+=")"
     return time
   }
 

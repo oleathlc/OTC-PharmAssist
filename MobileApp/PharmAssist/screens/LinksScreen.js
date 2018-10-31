@@ -67,7 +67,7 @@ render() {
   _handlePressUrl = () => {
     Alert.alert(
       'Add reminders for this prescription?',
-      this.state.lastScannedUrl,
+      'Reminders will start from today',
       [
         {
           text: 'Yes',
@@ -94,7 +94,7 @@ render() {
       <View style={styles.bottomBar}>
         <TouchableOpacity style={styles.url} onPress={this._handlePressUrl}>
           <Text numberOfLines={1} style={styles.urlText}>
-            {this.state.lastScannedUrl}
+            QR Code scanned! Click to add!
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
