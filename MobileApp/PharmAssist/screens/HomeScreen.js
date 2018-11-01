@@ -20,8 +20,7 @@ export default class HomeScreen extends React.Component {
     medList.map((item) => {
         var split = item.split("-")
         var drugCode = parseInt(split[0].substring(0,2))
-        medArray.push(drugList[drugCode])
-        medArray.push(this.getTimes(split[1]))
+        medArray.push(drugList[drugCode]+"\n"+this.getTimes(split[1]))
     })
     return medArray;
   }
@@ -87,16 +86,14 @@ export default class HomeScreen extends React.Component {
     var medArray = (qrCode != null) ?
         this.parseCode(medList) : null;
     var patientView = (qrCode != null) ?
-        <View><Text>{qrCode}</Text><Text>Prescription End Date: {endDate}</Text>
+        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}><Text>{qrCode}</Text><Text>Prescription End Date: {endDate}</Text>
         {(medArray != null) ? medArray.map((item) => {
-          return <Text key={item}>{item}</Text>
+          return <Text key={item} style={styles.item}>{item}</Text>
         }) : null}
-        </View> : null ;
+        </ScrollView> : <Text style={styles.noCode}>Please scan a QR code to add your prescription information and to set up reminders for your medication</Text> ;
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
         {patientView}
-        </ScrollView>
       </View>
     );
   }
@@ -110,4 +107,22 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingTop: 30,
   },
+  noCode: {
+    textAlign: 'center',
+    fontSize: 30,
+    padding: 20,
+    flexDirection: 'column',
+  },
+  item: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      textAlign: 'center',
+      alignItems: 'center',
+      padding: 5,
+      fontSize: 20,
+      margin: 2,
+      borderColor: '#2a4944',
+      borderWidth: 1,
+      backgroundColor: '#d2f7f1'
+   }
 });
