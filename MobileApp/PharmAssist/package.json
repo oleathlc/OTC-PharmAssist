@@ -23,7 +23,8 @@
     "react-native-modal-datetime-picker": "^6.0.0",
     "react-native-push-notification": "^3.1.2",
     "react-native-qrcode-scanner": "^1.1.0",
-    "react-navigation": "^2.16.0"
+    "react-navigation": "^2.16.0",
+    "react-time-picker": "^3.0.0"
   },
   "devDependencies": {
     "electron-react-devtools": "^0.5.3",

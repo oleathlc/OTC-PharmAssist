@@ -78,6 +78,20 @@ export default class HomeScreen extends React.Component {
 
   render() {
     var qrCode = this.props.navigation.getParam('qrCode', null);
+    var notificationSettings = this.props.navigation.getParam('Settings', null);
+    var promptToScan = <View><Text style={styles.noCode}>Please scan a QR code to add your prescription
+      information and set up reminders for your medication {"\n"} To scan a QR code, click </Text>
+      <TouchableOpacity onPress={() => this.props.navigation.navigate('Links')}>
+        <Text style={styles.link}>Here</Text></TouchableOpacity>
+      <Text style={styles.noCode}>or alternatively, click the 'Scanner' button at the bottom of the screen</Text></View>;
+    var initialScreen = (notificationSettings != null) ? promptToScan : 
+      <View><Text style={styles.noSettings}>Welcome to the PharmAssist App!{"\n"}
+      Before reminders can be created, please personalise how you would like
+      them to appear by clicking</Text>
+      <TouchableOpacity onPress={() => this.props.navigation.navigate('Settings')}>
+        <Text style={styles.link}>Here</Text></TouchableOpacity>
+      <Text style={styles.noSettings}>or alternatively, click the 'Settings' button at
+      the bottom of the screen</Text></View>;
     var numDays = (qrCode != null) ? 
         parseInt(qrCode.substring(0,2)) : null;
     const endDate = moment(new Date).add(numDays,'days').format('DD-MM-YY')
@@ -86,14 +100,15 @@ export default class HomeScreen extends React.Component {
     var medArray = (qrCode != null) ?
         this.parseCode(medList) : null;
     var patientView = (qrCode != null) ?
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}><Text>{qrCode}</Text><Text>Prescription End Date: {endDate}</Text>
+        <ScrollView style={styles.meds}><Text>{qrCode}</Text>
+        <Text>Prescription End Date: {endDate}</Text>
         {(medArray != null) ? medArray.map((item) => {
           return <Text key={item} style={styles.item}>{item}</Text>
         }) : null}
-        </ScrollView> : <Text style={styles.noCode}>Please scan a QR code to add your prescription information and to set up reminders for your medication</Text> ;
+        </ScrollView> : null;
     return (
       <View style={styles.container}>
-        {patientView}
+        {(qrCode != null)? patientView : initialScreen}
       </View>
     );
   }
@@ -102,27 +117,44 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-  },
-  contentContainer: {
     paddingTop: 30,
+  },
+  meds:{
+    margin: 2,
+    borderColor: '#2a4944',
+    borderWidth: 1,
+    backgroundColor: '#00aaff',
+    borderRadius: 5,
+  },
+  noSettings: {
+    textAlign: 'center',
+    fontSize: 25,
+    fontFamily: 'Roboto',
+  },
+  link: {
+    textAlign: 'center',
+    fontSize: 25,
+    color: 'blue',
+    fontFamily: 'Roboto',
   },
   noCode: {
     textAlign: 'center',
-    fontSize: 30,
-    padding: 20,
-    flexDirection: 'column',
+    fontSize: 25,
+    padding: 10,
+    fontFamily: 'Roboto',
   },
   item: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      textAlign: 'center',
-      alignItems: 'center',
-      padding: 5,
-      fontSize: 20,
-      margin: 2,
-      borderColor: '#2a4944',
-      borderWidth: 1,
-      backgroundColor: '#d2f7f1'
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    textAlign: 'center',
+    alignItems: 'center',
+    padding: 5,
+    fontSize: 20,
+    margin: 2,
+    borderColor: '#2a4944',
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: '#80d4ff',
+    fontFamily: 'Roboto',
    }
 });
