@@ -3,6 +3,7 @@ import { Button, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity
 import MyMeds from '../components/MyMeds';
 import { MonoText } from '../components/StyledText';
 import moment from 'moment';
+import { Notifications } from 'expo';
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -13,7 +14,21 @@ export default class HomeScreen extends React.Component {
     this.state = {
     }
   }
+  parseNotifications(code) {
+    //Splits the long code into each separate drug code and for each one adds an object with the drug details into an array which is then returned
+    const drugList = ["Ibuprofen 200mg","Citalopram 10mg","Diclofenac 25mg","Atorvastatin 40mg","Amoxicillin 250mg","Paracetamol 500mg","Amlodipine 5mg","Metformin 850mg","Codeine 15mg","Bisoprolol 2.5mg","Aspirin 75mg"];
+    var medList = code.split(",")
+    var medNotifications = []
+    medList.map((item) => {
+        var split = item.split("-")
+        var drugCode = parseInt(split[0].substring(0,2))
+        medNotifications.push({name: drugList[drugCode], times: split[1]})
+    })
+    //console.log(medNotifications)
+    return medNotifications;
+  }
   parseCode(code) {
+    //Splits the long code into each separate drug code and for each one gets the drug name, dose and times taken each day. Each drug is added into an array which is then returned
     const drugList = ["Ibuprofen 200mg","Citalopram 10mg","Diclofenac 25mg","Atorvastatin 40mg","Amoxicillin 250mg","Paracetamol 500mg","Amlodipine 5mg","Metformin 850mg","Codeine 15mg","Bisoprolol 2.5mg","Aspirin 75mg"];
     var medList = code.split(",")
     var medArray = []
@@ -25,6 +40,7 @@ export default class HomeScreen extends React.Component {
     return medArray;
   }
   getTimes(code) {
+    //Depending on what the code is, returns an appropriate message for when the med is taken
     var time;
     switch(code){
       case "1000":
@@ -75,15 +91,46 @@ export default class HomeScreen extends React.Component {
     }
     return time
   }
-
+  createNotifications(array,settings){
+    // loop through the array of meds and set up a notification object for each one and add it to an array which is then returned
+    // Time is hardcoded
+    notifications = []
+    for(i in array){
+      var notification = {
+        title: 'Medication due!',
+        body: 'Time to take your ' + array[i].name, // (string) — body text of the notification.
+        ios: { // (optional) (object) — notification configuration specific to iOS.
+          sound: settings[0] // (optional) (boolean) — if true, play a sound. Default: false.
+        },
+        android: // (optional) (object) — notification configuration specific to Android.
+        {
+          sound: settings[0], // (optional) (boolean) — if true, play a sound. Default: false.
+          priority: 'high', // (optional) (min | low | high | max) — android may present notifications according to the priority, for example a high priority notification will likely to be shown as a heads-up notification.
+          sticky: false, // (optional) (boolean) — if true, the notification will be sticky and not dismissable by user. The notification must be programmatically dismissed. Default: false.
+          vibrate: settings[1] // (optional) (boolean or array) — if true, vibrate the device. An array can be supplied to specify the vibration pattern, e.g. - [ 0, 500 ].
+          // link (optional) (string) — external link to open when notification is selected.
+        }
+      }
+      var schedulingOptions = {
+        time: (new Date()).getTime() + 5000, // (date or number) — A Date object representing when to fire the notification or a number in Unix epoch time. Example: (new Date()).getTime() + 1000 is one second from now.
+        //repeat: 'day',
+      };
+      notifications.push({message: notification, time: schedulingOptions})
+    }
+    //console.log(notifications);
+    return notifications
+  };
   render() {
-    var qrCode = this.props.navigation.getParam('qrCode', null);
-    var notificationSettings = this.props.navigation.getParam('Settings', null);
-    var promptToScan = <View><Text style={styles.noCode}>Please scan a QR code to add your prescription
-      information and set up reminders for your medication {"\n"} To scan a QR code, click </Text>
-      <TouchableOpacity onPress={() => this.props.navigation.navigate('Links')}>
+    var qrCode = this.props.navigation.getParam('qrCode', null); //Set to null if QR code not passed from scanner
+    var notificationSettings = this.props.navigation.getParam('Settings', null); //Set to null if settings not saved
+    //A view to prompt the user to scan in a QR code (contains a touch button to bring them to the scanner screen instead of pressing the icon at the bottom of screen)
+    var promptToScan = <View><Text style={styles.noCode}>Please scan a QR code to add your prescription 
+    information and set up reminders for your medication {"\n"} To scan a QR code, click</Text>
+    <TouchableOpacity onPress={() => this.props.navigation.navigate('Links')}>
         <Text style={styles.link}>Here</Text></TouchableOpacity>
       <Text style={styles.noCode}>or alternatively, click the 'Scanner' button at the bottom of the screen</Text></View>;
+
+    // User will be greeted with either a request to modify notification settings or the prompt to scan a QR code
     var initialScreen = (notificationSettings != null) ? promptToScan : 
       <View><Text style={styles.noSettings}>Welcome to the PharmAssist App!{"\n"}
       Before reminders can be created, please personalise how you would like
@@ -92,20 +139,38 @@ export default class HomeScreen extends React.Component {
         <Text style={styles.link}>Here</Text></TouchableOpacity>
       <Text style={styles.noSettings}>or alternatively, click the 'Settings' button at
       the bottom of the screen</Text></View>;
-    var numDays = (qrCode != null) ? 
+
+    var numDays = (qrCode != null) ? // Gets the prescription timeframe from the code
         parseInt(qrCode.substring(0,2)) : null;
-    const endDate = moment(new Date).add(numDays,'days').format('DD-MM-YY')
-    var medList = (qrCode != null) ? 
+    const endDate = moment(new Date).add(numDays,'days')//.format('DD-MM-YY') // Sets the end date for the notifications
+    var medList = (qrCode != null) ? //Cuts out the list of drug codes from the QR code
         qrCode.substring(3,qrCode.length-1) : null;
-    var medArray = (qrCode != null) ?
+    var medArray = (qrCode != null) ? //Calls the parseCode function to get the information for each drug
         this.parseCode(medList) : null;
+    //Displays each drug and the associated information on screen once a QR code has been scanned in
     var patientView = (qrCode != null) ?
         <ScrollView style={styles.meds}><Text>{qrCode}</Text>
-        <Text>Prescription End Date: {endDate}</Text>
+        <Text>Prescription End Date: {endDate.format('DD-MM-YY')}</Text>
         {(medArray != null) ? medArray.map((item) => {
           return <Text key={item} style={styles.item}>{item}</Text>
         }) : null}
         </ScrollView> : null;
+    // Once a QR code is scanned in, the below code sets up notifications for each medication which will be active until the prescription end date
+    var localNotifications = []
+    let t = new Date();
+    if (qrCode != null){
+      var notificationArray = this.parseNotifications(medList);
+      if (t < endDate){
+        localNotifications = this.createNotifications(notificationArray, notificationSettings)
+        localNotifications.map((item) => {
+          Notifications.scheduleLocalNotificationAsync(item.message, item.time);
+        })
+      }
+    }
+    if (t > endDate){
+      Notifications.cancelAllScheduledNotificationsAsync();
+    }
+    
     return (
       <View style={styles.container}>
         {(qrCode != null)? patientView : initialScreen}
