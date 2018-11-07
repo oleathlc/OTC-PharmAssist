@@ -1,5 +1,5 @@
 var express         = require("express"),
-    bodyParser      = require("body-parser"),
+    // bodyParser      = require("body-parser"),
     app             = express(),
     mongoose        = require("mongoose"),
     passport        = require("passport"),
@@ -9,9 +9,11 @@ var express         = require("express"),
 var User            = require("./models/user")
 
 mongoose.connect("mongodb://localhost/pharmassist", {useNewUrlParser: true});
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-  extended: true
-}));
+
+// app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+//   extended: true
+// }));
+
 app.use(express.urlencoded()); 
 // app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs"); 
@@ -46,29 +48,46 @@ app.get("/", function(req, res){
     res.render("home");
 });
 
+//login page
 app.get("/login", function(req, res){
     res.render("login");
 });
 
+// login post route
 app.post("/login", passport.authenticate("local", {
     successRedirect: "/generate", 
     failureRedirect: "/login"
     }), function(req, res){
 });
 
+// Generation of QR code form
 app.get("/generate", isLoggedIn, function(req, res){
     
     res.render("generate");
 });
 
+// Host page for QR code
 app.post("/code", isLoggedIn, function(req, res){
-    console.log(req.body.code);
-    var qr_svg = qr.image(req.body.code, { type: 'png' });
+    var message = req.body.duration + "{" + generateMessage(req.body);
+    console.log(message);
+    
+    var qr_svg = qr.image(message, { type: 'png' });
     // '30{1075-1001,09100-0101,0250-0110} 30{1075-1001,09100-0101,0250-0110} 30{1075-1001,09100-0101,0250-0110}'
     qr_svg.pipe(require('fs').createWriteStream('./public/images/qr.png'));
     res.render("code");
 });
 
+// 
+app.get("/logout", function(req, res){
+    req.logout();
+    res.redirect("/")
+})
+
+
+// route for help page
+app.get("/help", function(req, res){
+    res.render("help");
+})
     
 app.listen(process.env.PORT, process.env.IP, function(){
     console.log("The server is runnning");
@@ -81,3 +100,30 @@ function isLoggedIn(req, res, next){
     }
     res.redirect("/login");
 };
+
+
+// message generation given body of QR form assumes it has fields for duration and 5 fields for each medication
+// 1. Medication Code (2 digits: 00 - 9)
+// 2. Morning (0 or 1)
+// 3. Afternoon (0 or 1)
+// 4. Evening (0 or 1)
+// 5. Night (0 or 1)
+
+
+function generateMessage(body){
+    var message = "";
+    console.log("keys/5: " + Object.keys(body).length + "/5 = " +  Math.floor(Object.keys(body).length/5));
+    for(var i = 0; i < Math.floor(Object.keys(body).length/5); i++){
+        if(i != 0){
+            message += ',';
+        }
+        
+        message += body['medication' + i] + '-';
+        message += body['morning' + i][0];
+        message += body['afternoon' + i][0];
+        message += body['evening' + i][0];
+        message += body['night' + i][0];
+    }
+    message += '}';
+    return message;
+}

@@ -1,79 +1,159 @@
 <% include partials/header %>
 
 <div class="container">
-    <h1>Generate your QR code</h1>
-    
-    <P>Enter medication details below:</P>
-    
-     <div class="container">
-        <div class="row">
-            <h2>Bootstrap-select example</h2>
-            <p>This uses <a href="https://silviomoreto.github.io/bootstrap-select/">https://silviomoreto.github.io/bootstrap-select/</a></p>
-            <hr />
-        </div>
-    
-        <div class="row-fluid">
-            <select class="selectpicker" data-show-subtext="true" data-live-search="true">
-                <option data-subtext="Rep California">Tom Foolery</option>
-                <option data-subtext="Sen California">Bill Gordon</option>
-                <option data-subtext="Sen Massacusetts">Elizabeth Warren</option>
-                <option data-subtext="Rep Alabama">Mario Flores</option>
-                <option data-subtext="Rep Alaska">Don Young</option>
-                <option data-subtext="Rep California" disabled="disabled">Marvin Martinez</option>
-            </select>
-            <span class="help-inline">With <code>data-show-subtext="true" data-live-search="true"</code>. Try searching for california</span>
-        </div>
-      </div>
+    <p> </p>
+    <p> </p>
+    <h1 style="text-align: center">Generate your QR code</h1>
     
     
-    <form action="/code" method="POST">
+    <div class="container">
+        <form action="/code" method="POST">
+            <label for="durationInput" id="durationInput">Duration of Prescription (days): </label>
+            <div class="container">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="duration"  placeholder="-">
+                </div>
+            </div>
+            <label for="myTable">Prescription details:</label>
+            <div class="container">
+                <table id="myTable" class="table order-list">
+                    <thead>
+                        <tr>
+                            <td>Medication</td>
+                            <td>Morning</td>
+                            <td>Afternoon</td>
+                            <td>Evening</td>
+                            <td>Night</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="col">
+                                    <select class="custom-select" name="medication0">
+                                        <option selected disabled>-- Medication --</option>
+                                        <option value="00">Ibuprofen 200mg</option>
+                                        <option value="01">Citalopram 10mg</option>
+                                        <option value="02">Diclofenac 25mg</option>
+                                        <option value="03">Atorvastatin 40mg</option>
+                                        <option value="04">Amoxicillin 250mg</option>
+                                        <option value="05">Paracetamol 500mg</option>
+                                        <option value="06">Amlodipine 5mg</option>
+                                        <option value="07">Metformin 850mg</option>
+                                        <option value="08">Codeine 15mg</option>
+                                        <option value="09">Bisoprolol 2.5mg</option>
+                                        <option value="10">Aspirin 75mg</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="morning0" value="1">
+                                    <input class="form-check-input" type="hidden" name="morning0" value="0">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="afternoon0" value="1">
+                                    <input class="form-check-input" type="hidden" name="afternoon0" value="0">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="evening0" value="1">
+                                    <input class="form-check-input" type="hidden" name="evening0" value="0">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="night0" value="1">
+                                    <input class="form-check-input" type="hidden" name="night0" value="0">
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5" style="text-align: left;">
+                                <input type="button" class="btn btn-lg btn-block " id="addrow" value="Add Row" />
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-lg btn-primary btn-block">Generate QR</button>
+            </div>
+        </form>
+    </div>
         
-        <div class="form-group">
-            <input class="form-control" type="text" placeholder="code" name="code"> 
-        </div>
-        <div class="form-group">
-            <button class="btn btn-lg btn-primary btn-block">Generate QR</button>
-        </div>
-    </form>
+        
+    <!--<form action="/code" method="POST">-->
+        
+    <!--    <div class="form-row">-->
+    <!--        <div class="col">-->
+    <!--            <select class="custom-select" id="medication">-->
+    <!--                <option selected disabled>-- Medication --</option>-->
+    <!--                <option value="01">One</option>-->
+    <!--                <option value="02">Diclofenac</option>-->
+    <!--                <option value="03">Three</option>-->
+    <!--                <option value="04">Four</option>-->
+    <!--                <option value="05">Five</option>-->
+    <!--                <option value="06">Six</option>-->
+    <!--                <option value="07">Seven</option>-->
+    <!--                <option value="08">Eight</option>-->
+    <!--                <option value="09">Bisoprolol</option>-->
+    <!--                <option value="10">Aspirin</option>-->
+    <!--            </select>-->
+    <!--        </div>-->
+    
+            
+    <!--        <div class="col">-->
+    <!--            <div class="form-check">-->
+    <!--                <input class="form-check-input" type="checkbox" id="morning" value="0">-->
+    <!--                <label class="form-check-label" for="morning">-->
+    <!--                    Morning-->
+    <!--                </label>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--        <div class="col">-->
+    <!--            <div class="form-check">-->
+    <!--                <input class="form-check-input" type="checkbox" id="afternoon" value="0">-->
+    <!--                <label class="form-check-label" for="afternoon">-->
+    <!--                    Afternoon-->
+    <!--                </label>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--        <div class="col">-->
+    <!--            <div class="form-check">-->
+    <!--                <input class="form-check-input" type="checkbox" id="evening" value="0">-->
+    <!--                <label class="form-check-label" for="evening">-->
+    <!--                    Evening-->
+    <!--                </label>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--        <div class="col">-->
+    <!--            <div class="form-check">-->
+    <!--                <input class="form-check-input" type="checkbox" id="night" value="0">-->
+    <!--                <label class="form-check-label" for="night">-->
+    <!--                    Night-->
+    <!--                </label>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+        
+        
+    <!--    <div class="form-group">-->
+    <!--        <input class="form-control" type="text" placeholder="code" name="code"> -->
+    <!--    </div>-->
+    <!--    <div class="form-group">-->
+    <!--        <button class="btn btn-lg btn-primary btn-block">Generate QR</button>-->
+    <!--    </div>-->
+    <!--</form>-->
                 
                 
-    <img src="../public/images/qr.png" alt="QR code should be here">
-    
-    
 </div>
 
-<!--<input id="text" type="text" value="http://jindo.dev.naver.com/collie" style="width:80%" /><br />-->
-<!--<div id="qrcode" style="width:100px; height:100px; margin-top:15px;"></div>-->
 
-<!--<script type="text/javascript">-->
-<!--var qrcode = new QRCode(document.getElementById("qrcode"), {-->
-<!--	width : 100,-->
-<!--	height : 100-->
-<!--});-->
-
-<!--function makeCode () {		-->
-<!--	var elText = document.getElementById("text");-->
-	
-<!--	if (!elText.value) {-->
-<!--		alert("Input a text");-->
-<!--		elText.focus();-->
-<!--		return;-->
-<!--	}-->
-	
-<!--	qrcode.makeCode(elText.value);-->
-<!--}-->
-
-<!--makeCode();-->
-
-<!--$("#text").-->
-<!--	on("blur", function () {-->
-<!--		makeCode();-->
-<!--	}).-->
-<!--	on("keydown", function (e) {-->
-<!--		if (e.keyCode == 13) {-->
-<!--			makeCode();-->
-<!--		}-->
-<!--	});-->
-<!--</script>-->
 
 <% include partials/footer %>
