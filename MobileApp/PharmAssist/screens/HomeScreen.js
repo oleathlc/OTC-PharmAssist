@@ -31,6 +31,7 @@ export default class HomeScreen extends React.Component {
     //Splits the long code into each separate drug code and for each one gets the drug name, dose and times taken each day. Each drug is added into an array which is then returned
     const drugList = ["Ibuprofen 200mg","Citalopram 10mg","Diclofenac 25mg","Atorvastatin 40mg","Amoxicillin 250mg","Paracetamol 500mg","Amlodipine 5mg","Metformin 850mg","Codeine 15mg","Bisoprolol 2.5mg","Aspirin 75mg"];
     var medList = code.split(",")
+    console.log(medList);
     var medArray = []
     medList.map((item) => {
         var split = item.split("-")
@@ -38,6 +39,18 @@ export default class HomeScreen extends React.Component {
         medArray.push(drugList[drugCode]+"\n"+this.getTimes(split[1]))
     })
     return medArray;
+  }
+  parseDictCode(code) {
+    //Creates a dictionary of drugs and times etc...
+    const drugList = ["Ibuprofen 200mg","Citalopram 10mg","Diclofenac 25mg","Atorvastatin 40mg","Amoxicillin 250mg","Paracetamol 500mg","Amlodipine 5mg","Metformin 850mg","Codeine 15mg","Bisoprolol 2.5mg","Aspirin 75mg"];
+    var medList = code.split(",")
+    var medsDict = {};
+    medList.map((item) => {
+        var split = item.split("-")
+        var drugCode = parseInt(split[0].substring(0,2))
+        medsDict[item] = {Drug: drugList[drugCode],Times: this.getDaySeg(split[1])};
+    })
+    return medsDict;
   }
   getTimes(code) {
     //Depending on what the code is, returns an appropriate message for when the med is taken
@@ -90,6 +103,75 @@ export default class HomeScreen extends React.Component {
         break;
     }
     return time
+  }
+  getDaySeg(code) {
+    //Depending on what the code is, returns array with position in notificationSettings array for actual med time
+    var daySegment = [];
+    switch(code){
+      case "1000":
+        daySegment.push(4)
+        break;
+      case "0100":
+        daySegment.push(5)
+        break;
+      case "0010":
+        daySegment.push(6)
+        break;
+      case "0001":
+        daySegment.push(7)
+        break;
+      case "1001":
+        daySegment.push(4)
+        daySegment.push(7)
+        break;
+      case "1010":
+        daySegment.push(4)
+        daySegment.push(6)
+        break;
+      case "1100":
+        daySegment.push(4)
+        daySegment.push(5)
+        break;
+      case "0110":
+        daySegment.push(5)
+        daySegment.push(6)
+        break;
+      case "0101":
+        daySegment.push(5)
+        daySegment.push(4)
+        break;
+      case "0011":
+        daySegment.push(6)
+        daySegment.push(7)
+        break;
+      case "1101":
+        daySegment.push(4)
+        daySegment.push(5)
+        daySegment.push(7)
+        break;
+      case "1011":
+        daySegment.push(4)
+        daySegment.push(6)
+        daySegment.push(7)
+        break;
+      case "1110":
+        daySegment.push(4)
+        daySegment.push(5)
+        daySegment.push(6)
+        break;
+      case "0111":
+        daySegment.push(5)
+        daySegment.push(6)
+        daySegment.push(7)
+        break;
+      case "1111":
+        daySegment.push(4)
+        daySegment.push(5)
+        daySegment.push(6)
+        daySegment.push(7)
+        break;
+    }
+    return daySegment
   }
   createNotifications(array,settings){
     // loop through the array of meds and set up a notification object for each one and add it to an array which is then returned
@@ -147,14 +229,35 @@ export default class HomeScreen extends React.Component {
         qrCode.substring(3,qrCode.length-1) : null;
     var medArray = (qrCode != null) ? //Calls the parseCode function to get the information for each drug
         this.parseCode(medList) : null;
+    var medDict = (qrCode != null) ? //Calls the parseCode function to get the information for each drug
+        this.parseDictCode(medList) : null;
     //Displays each drug and the associated information on screen once a QR code has been scanned in
     var patientView = (qrCode != null) ?
+    <View style={styles.medsContainer}>
+    {/* //First scrollbox */}
+    <Text>My meds</Text>
+    <View style={styles.upcomingContainer1}>
+        <ScrollView style={styles.meds}>
+        {(medDict != null) ? Object.keys(medDict).map(function(item) {
+        //Array of times to extract from notificationSettings
+        takeMeds = medDict[item].Times
+        return <Text style={styles.item}>{medDict[item].Drug+" "+notificationSettings[takeMeds[0]]}</Text>
+        }) : null}
+        </ScrollView>
+      </View>
+      {/* //Second scrollbox */}
+      <Text>My prescription</Text>
+    <View style={styles.upcomingContainer2}>
         <ScrollView style={styles.meds}><Text>{qrCode}</Text>
         <Text>Prescription End Date: {endDate.format('DD-MM-YY')}</Text>
         {(medArray != null) ? medArray.map((item) => {
           return <Text key={item} style={styles.item}>{item}</Text>
         }) : null}
-        </ScrollView> : null;
+        </ScrollView>
+      </View>
+      </View> : null;
+        console.log(medArray);
+        console.log(notificationSettings);
     // Once a QR code is scanned in, the below code sets up notifications for each medication which will be active until the prescription end date
     var localNotifications = []
     let t = new Date();
@@ -183,6 +286,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 30,
+  },
+  medsContainer: {
+    flex: 1,
+    paddingTop: 30,
+  },
+  upcomingContainer1: {
+    paddingRight: 20,
+    paddingLeft: 20,
+    height: 200,
+  },
+  upcomingContainer2: {
+    paddingRight: 20,
+    paddingLeft: 20,
+    height: 200,
   },
   meds:{
     margin: 2,
