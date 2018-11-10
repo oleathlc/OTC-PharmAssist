@@ -48,7 +48,25 @@ export default class HomeScreen extends React.Component {
     medList.map((item) => {
         var split = item.split("-")
         var drugCode = parseInt(split[0].substring(0,2))
-        medsDict[item] = {Drug: drugList[drugCode],Times: this.getDaySeg(split[1])};
+        var datSegTimes = this.getDaySeg(split[1]);
+        if (datSegTimes.length == 1){
+          medsDict[item] = {Drug: drugList[drugCode],Times: datSegTimes,Taken: false};
+          }
+        else if (datSegTimes.length == 2){
+          medsDict[item] = {Drug: drugList[drugCode],Times: datSegTimes[0],Taken: false};
+          medsDict[item+"2"] = {Drug: drugList[drugCode],Times: datSegTimes[1],Taken: false};
+          }
+        else if (datSegTimes.length == 3){
+          medsDict[item] = {Drug: drugList[drugCode],Times: datSegTimes[0],Taken: false};
+          medsDict[item+"2"] = {Drug: drugList[drugCode],Times: datSegTimes[1],Taken: false};
+          medsDict[item+"3"] = {Drug: drugList[drugCode],Times: datSegTimes[2],Taken: false};
+          }
+        else {
+          medsDict[item] = {Drug: drugList[drugCode],Times: datSegTimes[0],Taken: false};
+          medsDict[item+"2"] = {Drug: drugList[drugCode],Times: datSegTimes[1],Taken: false};
+          medsDict[item+"3"] = {Drug: drugList[drugCode],Times: datSegTimes[2],Taken: false};
+          medsDict[item+"4"] = {Drug: drugList[drugCode],Times: datSegTimes[3],Taken: false};
+        }
     })
     return medsDict;
   }
@@ -239,9 +257,9 @@ export default class HomeScreen extends React.Component {
     <View style={styles.upcomingContainer1}>
         <ScrollView style={styles.meds}>
         {(medDict != null) ? Object.keys(medDict).map(function(item) {
-        //Array of times to extract from notificationSettings
-        takeMeds = medDict[item].Times
-        return <Text style={styles.item}>{medDict[item].Drug+" "+notificationSettings[takeMeds[0]]}</Text>
+        console.log(medDict[item]);
+        //These need to be sorted, currently order in dict
+        return <Text style={styles.item}>{medDict[item].Drug+" "+notificationSettings[medDict[item].Times]}</Text>
         }) : null}
         </ScrollView>
       </View>
