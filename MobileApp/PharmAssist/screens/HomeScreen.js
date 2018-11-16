@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity,View,} from 'react-native';
-import MyMeds from '../components/MyMeds';
 import { MonoText } from '../components/StyledText';
 import moment from 'moment';
 import { Notifications } from 'expo';
@@ -18,7 +17,10 @@ export default class HomeScreen extends React.Component {
     Notifications.addListener(this._handleNotification);
   }
   _handleNotification = ({ origin, data }) => {
-    console.info(`Notification (${origin}) with data: ${JSON.stringify(data)}`);
+    console.info(`Notification (${origin}) with data: ${(data)}`);
+    if (origin == 'selected'){
+      this.props.navigation.navigate('Alerts')
+    }
   };
   parseCode(code) {
     //Splits the long code into each separate drug code and for each one gets the drug name, dose and times taken each day. Each drug is added into an array which is then returned
@@ -232,6 +234,10 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         {(qrCode != null)? patientView : initialScreen}
+        {/*}<Button
+              title="Go to Alerts"
+              onPress={() => this.props.navigation.navigate('Alerts'
+            )}/>*/}
       </View>
     );
   }

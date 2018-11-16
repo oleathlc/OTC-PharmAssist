@@ -6,24 +6,37 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import AlertScreen from '../screens/AlertScreen';
 import camera from '../assets/images/camera.png';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
+  Alerts: {
+    screen:AlertScreen,
+    navigationOptions:({
+      headerLeft:null,
+    }),
+  },
 });
-
-HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
-    />
-  ),
+HomeStack.navigationOptions = ({navigation})=> {
+  let { routeName } = navigation.state.routes[navigation.state.index];
+  let navigationOptions = {
+    tabBarLabel: 'Home',
+    tabBarIcon: ({ focused }) => (
+      <TabBarIcon
+        focused={focused}
+        name={
+          Platform.OS === 'ios'
+            ? `ios-information-circle${focused ? '' : '-outline'}`
+            : 'md-information-circle'
+        }
+      />
+    ),
+  };
+  if (routeName === 'Alerts') {
+  navigationOptions.tabBarVisible = false;
+  }
+  return navigationOptions;
 };
 
 const LinksStack = createStackNavigator({
