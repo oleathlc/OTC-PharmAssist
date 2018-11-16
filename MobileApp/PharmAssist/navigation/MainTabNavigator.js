@@ -31,7 +31,7 @@ const LinksStack = createStackNavigator({
 });
 
 LinksStack.navigationOptions = {
-  tabBarLabel: 'Links',
+  tabBarLabel: 'Scanner',
   tabBarIcon: ({focused}) => (
     focused ?
     <Image
