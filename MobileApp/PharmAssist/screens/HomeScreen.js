@@ -14,6 +14,12 @@ export default class HomeScreen extends React.Component {
     this.state = {
     }
   }
+  async componentDidMount() {
+    Notifications.addListener(this._handleNotification);
+  }
+  _handleNotification = ({ origin, data }) => {
+    console.info(`Notification (${origin}) with data: ${JSON.stringify(data)}`);
+  };
   parseNotifications(code) {
     //Splits the long code into each separate drug code and for each one adds an object with the drug details into an array which is then returned
     const drugList = ["Ibuprofen 200mg","Citalopram 10mg","Diclofenac 25mg","Atorvastatin 40mg","Amoxicillin 250mg","Paracetamol 500mg","Amlodipine 5mg","Metformin 850mg","Codeine 15mg","Bisoprolol 2.5mg","Aspirin 75mg"];
@@ -127,66 +133,66 @@ export default class HomeScreen extends React.Component {
     var daySegment = [];
     switch(code){
       case "1000":
-        daySegment.push(4)
+        daySegment.push(3)
         break;
       case "0100":
-        daySegment.push(5)
+        daySegment.push(4)
         break;
       case "0010":
-        daySegment.push(6)
+        daySegment.push(5)
         break;
       case "0001":
-        daySegment.push(7)
+        daySegment.push(6)
         break;
       case "1001":
-        daySegment.push(4)
-        daySegment.push(7)
+        daySegment.push(3)
+        daySegment.push(6)
         break;
       case "1010":
-        daySegment.push(4)
-        daySegment.push(6)
+        daySegment.push(3)
+        daySegment.push(5)
         break;
       case "1100":
+        daySegment.push(3)
         daySegment.push(4)
-        daySegment.push(5)
         break;
       case "0110":
+        daySegment.push(4)
         daySegment.push(5)
-        daySegment.push(6)
         break;
       case "0101":
-        daySegment.push(5)
         daySegment.push(4)
+        daySegment.push(6)
         break;
       case "0011":
+        daySegment.push(5)
         daySegment.push(6)
-        daySegment.push(7)
         break;
       case "1101":
+        daySegment.push(3)
         daySegment.push(4)
-        daySegment.push(5)
-        daySegment.push(7)
+        daySegment.push(6)
         break;
       case "1011":
-        daySegment.push(4)
+        daySegment.push(3)
+        daySegment.push(5)
         daySegment.push(6)
-        daySegment.push(7)
         break;
       case "1110":
+        daySegment.push(3)
         daySegment.push(4)
         daySegment.push(5)
-        daySegment.push(6)
         break;
       case "0111":
-        daySegment.push(5)
-        daySegment.push(6)
-        daySegment.push(7)
-        break;
-      case "1111":
         daySegment.push(4)
         daySegment.push(5)
         daySegment.push(6)
-        daySegment.push(7)
+        break;
+      case "1111":
+        daySegment.push(3)
+        daySegment.push(4)
+        daySegment.push(5)
+        daySegment.push(6)
         break;
     }
     return daySegment

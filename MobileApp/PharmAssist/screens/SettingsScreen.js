@@ -23,10 +23,9 @@ export default class SettingsScreen extends React.Component {
   constructor(props){
     super(props);
     // Settings array with defaults
-    this.settings = [false,false,false,10,'9:00 am','1:00 pm','6:00 pm','10:00 pm'];
+    this.settings = [false,false,10,'9:00 am','1:00 pm','6:00 pm','10:00 pm'];
     this.state = {
       ring:false,
-      ping:false,
       vibrate:false,
       snooze:"",
       morning:"",
@@ -88,25 +87,17 @@ export default class SettingsScreen extends React.Component {
     // console.log(this.settings);
 
   }
-  pingCheckbox()
-  {
-    this.setState({
-    ping:!this.state.ping
-    })
-    this.settings[1] = !this.settings[1]
-    // console.log(this.settings);
-  }
   vibrateCheckbox()
   {
     this.setState({
     vibrate:!this.state.vibrate
     })
-    this.settings[2] = !this.settings[2]
+    this.settings[1] = !this.settings[1]
     // console.log(this.settings);
   }
   snoozeSelect(itemValue)
   {
-    this.settings[3] = parseInt(itemValue)
+    this.settings[2] = parseInt(itemValue)
     // console.log(this.settings);
   }
 
@@ -115,25 +106,25 @@ export default class SettingsScreen extends React.Component {
   morningSelect(date)
   {
     morningtime = moment(date).format('h:mm a');
-    this.settings[4] = morningtime
+    this.settings[3] = morningtime
     // console.log(this.settings);
   }
   afternoonSelect(date)
   {
     afternoontime = moment(date).format('h:mm a');
-    this.settings[5] = afternoontime
+    this.settings[4] = afternoontime
     // console.log(this.settings);
   }
   eveningSelect(date)
   {
     eveningtime = moment(date).format('h:mm a');
-    this.settings[6] = eveningtime
+    this.settings[5] = eveningtime
     // console.log(this.settings);
   }
   bedtimeSelect(date)
   {
     bedtimetime = moment(date).format('h:mm a');
-    this.settings[7] = bedtimetime
+    this.settings[6] = bedtimetime
     // console.log(this.settings);
   }
   
@@ -144,7 +135,6 @@ export default class SettingsScreen extends React.Component {
         Notifications alert
         </Text>
         <CheckBox textStyle={styles.boxFont} containerStyle={styles.checkBox} size={15} title="Ring" checked={this.state.ring} onPress={() => this.ringCheckbox()}/>
-        <CheckBox textStyle={styles.boxFont} containerStyle={styles.checkBox} size={15} title="Ping" checked = {this.state.ping} onPress={() => this.pingCheckbox()}/>
         <CheckBox textStyle={styles.boxFont} containerStyle={styles.checkBox} size={15} title="Vibrate" checked = {this.state.vibrate} onPress={() => this.vibrateCheckbox()}/>
         
         <Text style={styles.settingsfont}>
