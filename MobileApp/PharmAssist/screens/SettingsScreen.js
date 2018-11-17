@@ -199,6 +199,7 @@ export default class SettingsScreen extends React.Component {
         </View>
         <Button 
               title="Save Settings"
+              color="#19a319"
               onPress={() => this.props.navigation.navigate('Home', {
                 Settings: this.settings,
               })}/>

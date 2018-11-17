@@ -3,6 +3,7 @@ import { Button, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity
 import { MonoText } from '../components/StyledText';
 import moment from 'moment';
 import { Notifications } from 'expo';
+import { Col, Row, Grid } from "react-native-easy-grid";
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -34,7 +35,7 @@ export default class HomeScreen extends React.Component {
     medList.map((item) => {
         var split = item.split("-")
         var drugCode = parseInt(split[0].substring(0,2))
-        medArray.push(drugList[drugCode]+"\n"+this.getTimes(split[1]))
+        medArray.push(drugList[drugCode]+","+this.getTimes(split[1]))
     })
     return medArray;
   }
@@ -157,7 +158,7 @@ export default class HomeScreen extends React.Component {
       var setTime = today.getTime() + getSec
       var now = new Date().getTime()
       var alertTime = (setTime > now) ? setTime: setTime + 86400000 //If current time is after the alert time - pushes it to next day
-      console.log(alertTime)
+      // console.log(alertTime)
       var schedulingOptions = {
         time: alertTime,
         //(new Date()).getTime() + 5000, // (date or number) — A Date object representing when to fire the notification or a number in Unix epoch time. Example: (new Date()).getTime() + 1000 is one second from now.
@@ -175,21 +176,34 @@ export default class HomeScreen extends React.Component {
     var qrCode = this.props.navigation.getParam('qrCode', null); //Set to null if QR code not passed from scanner
     var notificationSettings = this.props.navigation.getParam('Settings', null); //Set to null if settings not saved
     //A view to prompt the user to scan in a QR code (contains a touch button to bring them to the scanner screen instead of pressing the icon at the bottom of screen)
-    var promptToScan = <View><Text style={styles.noCode}>Please scan a QR code to add your prescription
-    information and set up reminders for your medication {"\n"} To scan a QR code, click</Text>
-    <TouchableOpacity onPress={() => this.props.navigation.navigate('Links')}>
-        <Text style={styles.link}>Here</Text></TouchableOpacity>
-      <Text style={styles.noCode}>or alternatively, click the 'Scanner' button at the bottom of the screen</Text></View>;
+    var promptToScan = <View style={styles.medsContainer}>
+    <Text style={styles.noCode}>To scan a QR code and add your prescription and reminders, tap the button below.</Text>
+    <Button 
+              title="Go to QR code scanner"
+              color="#19a319"
+              onPress={() => this.props.navigation.navigate('Links')}/>
+    {/* <TouchableOpacity onPress={() => this.props.navigation.navigate('Links')}>
+        <Text style={styles.link}>Here</Text></TouchableOpacity> */}
+      {/* <Text style={styles.noCode}>or alternatively, click the 'Scanner' button at the bottom of the screen</Text> */}
+      </View>;
 
     // User will be greeted with either a request to modify notification settings or the prompt to scan a QR code
     var initialScreen = (notificationSettings != null) ? promptToScan :
-      <View><Text style={styles.noSettings}>Welcome to the PharmAssist App!{"\n"}
-      Before reminders can be created, please personalise how you would like
-      them to appear by clicking</Text>
-      <TouchableOpacity onPress={() => this.props.navigation.navigate('Settings')}>
+      <View style={styles.medsContainer}>
+      <Text style={styles.noSettings}>Welcome to the PharmAssist App!</Text>
+      <Text style={styles.noSettings}>Before reminders can be created, you should personalise how you would like
+      them to appear.</Text>
+      <Text style={styles.noSettings}>Tap the button below to adjust your settings.</Text>
+      <Button 
+              title="Go to settings"
+              color="#19a319"
+              onPress={() => this.props.navigation.navigate('Settings')}/>
+
+      {/* <TouchableOpacity onPress={() => this.props.navigation.navigate('Settings')}>
         <Text style={styles.link}>Here</Text></TouchableOpacity>
       <Text style={styles.noSettings}>or alternatively, click the 'Settings' button at
-      the bottom of the screen</Text></View>;
+      the bottom of the screen</Text> */}
+      </View>;
 
     var numDays = (qrCode != null) ? // Gets the prescription timeframe from the code
         parseInt(qrCode.substring(0,2)) : null;
@@ -210,11 +224,11 @@ export default class HomeScreen extends React.Component {
     var patientView = (qrCode != null) ?
     <View style={styles.medsContainer}>
     {/* //First scrollbox */}
-    <Text>My meds</Text>
     <View style={styles.upcomingContainer1}>
+    <Text style={styles.subheaderfont}>My meds</Text>
         <ScrollView style={styles.meds}>
         {(medDict != null) ? medDict.map((item) => {
-        console.log(item);
+        // console.log(item);
         //These need to be sorted, currently order in dict
         if (item.Taken == false){
           return <Text style={styles.item}>{item.Drug+" "+notificationSettings[item.Times]}</Text>
@@ -225,18 +239,46 @@ export default class HomeScreen extends React.Component {
         </ScrollView>
       </View>
       {/* //Second scrollbox */}
-      <Text>My prescription</Text>
     <View style={styles.upcomingContainer2}>
-        <ScrollView style={styles.meds}><Text>{qrCode}</Text>
-        <Text>Prescription End Date: {endDate.format('DD-MM-YY')}</Text>
-        {(medArray != null) ? medArray.map((item) => {
+    <Text style={styles.subheaderfont}>My prescription</Text>
+        <ScrollView style={styles.meds}>
+        {/* <Text>{qrCode}</Text> */}
+        <Text style={styles.enddate}>Prescription end date: {endDate.format('DD-MM-YY')}</Text>
+        <Grid>
+            <Col style={styles.tablecol}>
+                <Row style={styles.headrow}>
+                <Text style={styles.tableheadfont}>Medication</Text>
+                </Row>
+            </Col>
+            <Col style={styles.tablecol}>
+                <Row style={styles.headrow}>
+                    <Text style={styles.tableheadfont}>Instruction</Text>
+                </Row>
+            </Col>
+        </Grid>
+        {/* {(medArray != null) ? medArray.map((item) => {
           return <Text style={styles.item}>{item}</Text>
-        }) : null}
+        }) : null} */}
+        {(medArray != null) ? medArray.map((item) => {
+          var pres = item.split(",");
+          return <Grid>
+            <Col style={styles.tablecol}>
+                <Row style={styles.tablerow}>
+                <Text style={styles.tablefont}>{pres[0]}</Text>
+                </Row>
+            </Col>
+            <Col style={styles.tablecol}>
+                <Row style={styles.tablerow}>
+                    <Text style={styles.tablefont}>{pres[1]}</Text>
+                </Row>
+            </Col>
+        </Grid>
+      }) : null}
         </ScrollView>
       </View>
       </View> : null;
         console.log(medArray);
-        console.log(notificationSettings);
+        // console.log(notificationSettings);
     // Once a QR code is scanned in, the below code sets up notifications for each medication which will be active until the prescription end date
     var localNotifications = []
     let t = new Date();
@@ -268,16 +310,49 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 30,
+    paddingTop: 20,
+    backgroundColor: '#fafafa',
+  },
+  subheaderfont: {
+    fontSize: 20,
+    paddingBottom: 5,
+  },
+  tableheadfont: {
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  tablefont: {
+    fontSize: 16,
+  },
+  enddate: {
+    fontSize: 16,
+    padding: 5,
+  },
+  tablecol: {
+    borderColor: '#2a4944',
+    borderRightWidth: 1,
+  },
+  headrow: {
+    backgroundColor: '#75d1ff',
+    borderColor: '#2a4944',
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    padding: 5,
+  },
+  tablerow: {
+    borderColor: '#2a4944',
+    borderBottomWidth: 1,
+    padding: 5,
   },
   medsContainer: {
     flex: 1,
-    paddingTop: 30,
+    padding: 15,
   },
   upcomingContainer1: {
     paddingRight: 20,
     paddingLeft: 20,
     height: 200,
+    paddingBottom: 10,
   },
   upcomingContainer2: {
     paddingRight: 20,
@@ -288,13 +363,14 @@ const styles = StyleSheet.create({
     margin: 2,
     borderColor: '#2a4944',
     borderWidth: 1,
-    backgroundColor: '#00aaff',
+    backgroundColor: '#e8f7ff',
     borderRadius: 5,
   },
   noSettings: {
     textAlign: 'center',
-    fontSize: 25,
+    fontSize: 20,
     fontFamily: 'Roboto',
+    paddingBottom: 30,
   },
   link: {
     textAlign: 'center',
@@ -304,9 +380,10 @@ const styles = StyleSheet.create({
   },
   noCode: {
     textAlign: 'center',
-    fontSize: 25,
+    fontSize: 20,
     padding: 10,
     fontFamily: 'Roboto',
+    paddingBottom: 30,
   },
   item: {
     flexDirection: 'row',
