@@ -19,7 +19,10 @@ export default class HomeScreen extends React.Component {
   _handleNotification = ({ origin, data }) => {
     console.info(`Notification (${origin}) with data: ${(data)}`);
     if (origin == 'selected'){
-      this.props.navigation.navigate('Alerts')
+      this.props.navigation.navigate('Alerts',{
+        Info: data,
+      }
+    )
     }
   };
   parseCode(code) {
@@ -39,33 +42,38 @@ export default class HomeScreen extends React.Component {
     //Creates a dictionary of drugs and times etc. in order of time of day
     const drugList = ["Ibuprofen 200mg","Citalopram 10mg","Diclofenac 25mg","Atorvastatin 40mg","Amoxicillin 250mg","Paracetamol 500mg","Amlodipine 5mg","Metformin 850mg","Codeine 15mg","Bisoprolol 2.5mg","Aspirin 75mg"];
     var medList = code.split(",")
-    var medsDict = {};
+    var medsDict = [];
+    var index = 0;
     medList.map((item) => { //AM meds added
         var split = item.split("-")
         var drugCode = parseInt(split[0].substring(0,2))
         if (split[1].substring(0,1) == '1'){
-          medsDict[item+"1"] = {Drug: drugList[drugCode],Times: 3,Taken: false}
+          medsDict.push({Drug: drugList[drugCode],Times: 3,Taken: false, Ind: index})
+          index++;
         }
       })
     medList.map((item) => { //Afternoon meds added
         var split = item.split("-")
         var drugCode = parseInt(split[0].substring(0,2))
         if (split[1].substring(1,2) == '1'){
-          medsDict[item+"2"] = {Drug: drugList[drugCode],Times: 4,Taken: false}
+          medsDict.push({Drug: drugList[drugCode],Times: 4,Taken: false, Ind: index})
+          index++;
         }
       })
     medList.map((item) => { //Evening meds added
         var split = item.split("-")
         var drugCode = parseInt(split[0].substring(0,2))
         if (split[1].substring(2,3) == '1'){
-          medsDict[item+"3"] = {Drug: drugList[drugCode],Times: 5,Taken: false}
+          medsDict.push({Drug: drugList[drugCode],Times: 5,Taken: false, Ind: index})
+          index++;
         }
       })
     medList.map((item) => { //PM meds added
         var split = item.split("-")
         var drugCode = parseInt(split[0].substring(0,2))
         if (split[1].substring(3,4) == '1'){
-          medsDict[item+"4"] = {Drug: drugList[drugCode],Times: 6,Taken: false}
+          medsDict.push({Drug: drugList[drugCode],Times: 6,Taken: false, Ind: index})
+          index++;
         }
       })
     console.log(medsDict);
@@ -131,6 +139,7 @@ export default class HomeScreen extends React.Component {
       var notification = {
         title: 'Medication due!',
         body: 'Time to take your ' + array[key].Drug, // (string) — body text of the notification.
+        data: array[key],
         ios: { // (optional) (object) — notification configuration specific to iOS.
           sound: settings[0] // (optional) (boolean) — if true, play a sound. Default: false.
         },
@@ -159,6 +168,9 @@ export default class HomeScreen extends React.Component {
     //console.log(notifications);
     return notifications
   };
+  updateKardex(med, dict){
+    dict[med.Ind] = med;
+  }
   render() {
     var qrCode = this.props.navigation.getParam('qrCode', null); //Set to null if QR code not passed from scanner
     var notificationSettings = this.props.navigation.getParam('Settings', null); //Set to null if settings not saved
@@ -186,8 +198,14 @@ export default class HomeScreen extends React.Component {
         qrCode.substring(3,qrCode.length-1) : null;
     var medArray = (qrCode != null) ? //Calls the parseCode function to get the information for each drug
         this.parseCode(medList) : null;
-    var medDict = (qrCode != null) ? //Calls the parseCode function to get the information for each drug
+    var medDict = (qrCode != null) ? //Calls the parseDictCode function to get the information for each drug
         this.parseDictCode(medList) : null;
+    var takenMed = this.props.navigation.getParam('TakenMed', null);
+    if (takenMed != null){
+      this.updateKardex(takenMed, medDict)
+    }
+
+
     //Displays each drug and the associated information on screen once a QR code has been scanned in
     var patientView = (qrCode != null) ?
     <View style={styles.medsContainer}>
@@ -195,10 +213,14 @@ export default class HomeScreen extends React.Component {
     <Text>My meds</Text>
     <View style={styles.upcomingContainer1}>
         <ScrollView style={styles.meds}>
-        {(medDict != null) ? Object.keys(medDict).map(function(item) {
-        console.log(medDict[item]);
+        {(medDict != null) ? medDict.map((item) => {
+        console.log(item);
         //These need to be sorted, currently order in dict
-        return <Text style={styles.item}>{medDict[item].Drug+" "+notificationSettings[medDict[item].Times]}</Text>
+        if (item.Taken == false){
+          return <Text style={styles.item}>{item.Drug+" "+notificationSettings[item.Times]}</Text>
+        } else {
+          return <Text style={styles.itemTaken}>{item.Drug+" "+notificationSettings[item.Times]}</Text>
+        }
         }) : null}
         </ScrollView>
       </View>
@@ -208,7 +230,7 @@ export default class HomeScreen extends React.Component {
         <ScrollView style={styles.meds}><Text>{qrCode}</Text>
         <Text>Prescription End Date: {endDate.format('DD-MM-YY')}</Text>
         {(medArray != null) ? medArray.map((item) => {
-          return <Text key={item} style={styles.item}>{item}</Text>
+          return <Text style={styles.item}>{item}</Text>
         }) : null}
         </ScrollView>
       </View>
@@ -299,5 +321,19 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#80d4ff',
     fontFamily: 'Roboto',
-   }
+  },
+   itemTaken: {
+     flexDirection: 'row',
+     justifyContent: 'space-between',
+     textAlign: 'center',
+     alignItems: 'center',
+     padding: 5,
+     fontSize: 20,
+     margin: 2,
+     borderColor: '#2a4944',
+     borderWidth: 1,
+     borderRadius: 5,
+     backgroundColor: '#6c7584',
+     fontFamily: 'Roboto',
+    }
 });
