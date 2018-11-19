@@ -10,7 +10,8 @@ export default class AlertScreen extends React.Component {
     title: 'Reminder',
   };
   render() {
-    var alertInfo = this.props.navigation.getParam('Info', "Nothing");
+    var alertInfo = this.props.navigation.getParam('Info', null);
+    var snoozeTime = this.props.navigation.getParam('Snooze', null);
     console.log(alertInfo)
     return (
       <View>
@@ -24,10 +25,10 @@ export default class AlertScreen extends React.Component {
       <Button
             color='#ed952a'
             title="I will take my medication later"
-            onPress={() => this.props.navigation.navigate('Home',{
-              snoozeReminder: alertInfo,
-            }
-          )}/>
+            onPress={() => this.props.navigation.navigate('Home', {
+              MedInfo: alertInfo,
+            })}
+              />
       </View>
     );
   };

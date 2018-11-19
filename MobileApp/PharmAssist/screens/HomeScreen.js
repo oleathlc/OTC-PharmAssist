@@ -172,13 +172,36 @@ export default class HomeScreen extends React.Component {
   updateKardex(med, dict){
     dict[med.Ind] = med;
   }
+  snoozeSetter(alertInfo, settings){
+      // loop through the the meds and set up a notification object for each one and add it to an array which is then returned
+      var notification = {
+          title: 'Medication due!',
+          body: 'Time to take your ' + alertInfo.Drug, // (string) — body text of the notification.
+          data: alertInfo,
+          ios: { // (optional) (object) — notification configuration specific to iOS.
+            sound: settings[0] // (optional) (boolean) — if true, play a sound. Default: false.
+          },
+          android: // (optional) (object) — notification configuration specific to Android.
+          {
+            sound: settings[0], // (optional) (boolean) — if true, play a sound. Default: false.
+            priority: 'high', // (optional) (min | low | high | max) — android may present notifications according to the priority, for example a high priority notification will likely to be shown as a heads-up notification.
+            sticky: false, // (optional) (boolean) — if true, the notification will be sticky and not dismissable by user. The notification must be programmatically dismissed. Default: false.
+            vibrate: settings[1] // (optional) (boolean or array) — if true, vibrate the device. An array can be supplied to specify the vibration pattern, e.g. - [ 0, 500 ].
+            // link (optional) (string) — external link to open when notification is selected.
+          }
+        }
+        var snoozeTime = new Date().getTime() + (settings[2] * 1000)
+        var schedulingOptions = { time: snoozeTime, }
+        Notifications.scheduleLocalNotificationAsync(notification, schedulingOptions);
+        this.props.navigation.setParams({MedInfo: null})
+  }
   render() {
     var qrCode = this.props.navigation.getParam('qrCode', null); //Set to null if QR code not passed from scanner
     var notificationSettings = this.props.navigation.getParam('Settings', null); //Set to null if settings not saved
     //A view to prompt the user to scan in a QR code (contains a touch button to bring them to the scanner screen instead of pressing the icon at the bottom of screen)
     var promptToScan = <View style={styles.medsContainer}>
     <Text style={styles.noCode}>To scan a QR code and add your prescription and reminders, tap the button below.</Text>
-    <Button 
+    <Button
               title="Go to QR code scanner"
               color="#19a319"
               onPress={() => this.props.navigation.navigate('Links')}/>
@@ -194,7 +217,7 @@ export default class HomeScreen extends React.Component {
       <Text style={styles.noSettings}>Before reminders can be created, you should personalise how you would like
       them to appear.</Text>
       <Text style={styles.noSettings}>Tap the button below to adjust your settings.</Text>
-      <Button 
+      <Button
               title="Go to settings"
               color="#19a319"
               onPress={() => this.props.navigation.navigate('Settings')}/>
@@ -208,11 +231,11 @@ export default class HomeScreen extends React.Component {
     var numDays = (qrCode != null) ? // Gets the prescription timeframe from the code
         parseInt(qrCode.substring(0,2)) : null;
     const endDate = moment(new Date).add(numDays,'days')//.format('DD-MM-YY') // Sets the end date for the notifications
-    var medList = (qrCode != null) ? //Cuts out the list of drug codes from the QR code
+    const medList = (qrCode != null) ? //Cuts out the list of drug codes from the QR code
         qrCode.substring(3,qrCode.length-1) : null;
     var medArray = (qrCode != null) ? //Calls the parseCode function to get the information for each drug
         this.parseCode(medList) : null;
-    var medDict = (qrCode != null) ? //Calls the parseDictCode function to get the information for each drug
+    const medDict = (qrCode != null) ? //Calls the parseDictCode function to get the information for each drug
         this.parseDictCode(medList) : null;
     var takenMed = this.props.navigation.getParam('TakenMed', null);
     if (takenMed != null){
@@ -290,6 +313,10 @@ export default class HomeScreen extends React.Component {
           Notifications.scheduleLocalNotificationAsync(item.message, item.time);
         })
       }
+    }
+    var snoozeReminder = this.props.navigation.getParam('MedInfo', null);
+    if (snoozeReminder != null){
+      this.snoozeSetter(snoozeReminder, notificationSettings)
     }
     if (t > endDate){
       Notifications.cancelAllScheduledNotificationsAsync();
