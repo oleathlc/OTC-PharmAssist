@@ -10,11 +10,15 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { BarCodeScanner, Permissions } from 'expo';
+import LogoTitle from '../components/LogoTitle';
 
 
 export default class LinksScreen extends React.Component {
   static navigationOptions = {
-    title: 'Prescription Scanner',
+    headerTitle: <LogoTitle />,
+    headerStyle: {
+      backgroundColor: '#d8d8d8',
+    }
   };
   state = {
     hasCameraPermission: null,
@@ -65,20 +69,26 @@ render() {
   }
 
   _handlePressUrl = () => {
-    Alert.alert(
-      'Add reminders for this prescription?',
-      'Reminders will start from today',
-      [
-        {
-          text: 'Yes',
-          onPress: () => this.props.navigation.navigate('Home',{
-            qrCode: this.state.lastScannedUrl,
-          })
-        },
-        { text: 'No', onPress: () => {} },
-      ],
-      { cancellable: false }
-    );
+    var qrCode = this.state.lastScannedUrl
+    this.setState({ lastScannedUrl: null })
+    this.props.navigation.navigate('Home',{
+      qrCode: qrCode,
+    })
+
+    // Alert.alert(
+    //   'Add reminders for this prescription?',
+    //   'Reminders will start from today',
+    //   [
+    //     {
+    //       text: 'Yes',
+    //       onPress: () => this.props.navigation.navigate('Home',{
+    //         qrCode: this.state.lastScannedUrl,
+    //       })
+    //     },
+    //     { text: 'No', onPress: () => {} },
+    //   ],
+    //   { cancellable: false }
+    // );
   };
 
   _handlePressCancel = () => {
@@ -93,8 +103,8 @@ render() {
     return (
       <View style={styles.bottomBar}>
         <TouchableOpacity style={styles.url} onPress={this._handlePressUrl}>
-          <Text numberOfLines={1} style={styles.urlText}>
-            QR Code scanned! Click to add!
+          <Text style={styles.urlText}>
+            QR Code scanned! {"\n"} Click to add!
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -118,10 +128,10 @@ const styles = StyleSheet.create({
   },
   bottomBar: {
     position: 'absolute',
-    bottom: 0,
+    bottom: 200,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: '#34af66',
     padding: 15,
     flexDirection: 'row',
   },
@@ -130,7 +140,8 @@ const styles = StyleSheet.create({
   },
   urlText: {
     color: '#fff',
-    fontSize: 20,
+    fontSize: 30,
+    textAlign: 'center',
   },
   cancelButton: {
     marginLeft: 10,

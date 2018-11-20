@@ -4,10 +4,14 @@ import { MonoText } from '../components/StyledText';
 import moment from 'moment';
 import { Notifications } from 'expo';
 import { Col, Row, Grid } from "react-native-easy-grid";
+import LogoTitle from '../components/LogoTitle';
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
-    title: 'PharmAssist'
+    headerTitle: <LogoTitle />,
+    headerStyle: {
+      backgroundColor: '#d8d8d8',
+    }
   };
   constructor(props){
     super(props);

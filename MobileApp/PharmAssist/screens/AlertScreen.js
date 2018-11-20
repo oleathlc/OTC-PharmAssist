@@ -3,11 +3,15 @@ import { Button, Image, Platform, ScrollView, StyleSheet, Text, TouchableOpacity
 import { MonoText } from '../components/StyledText';
 import moment from 'moment';
 import { Notifications } from 'expo';
+import LogoTitle from '../components/LogoTitle';
 
 
 export default class AlertScreen extends React.Component {
   static navigationOptions = {
-    title: 'Reminder',
+    headerTitle: <LogoTitle />,
+    headerStyle: {
+      backgroundColor: '#d8d8d8',
+    }
   };
   render() {
     var alertInfo = this.props.navigation.getParam('Info', null);

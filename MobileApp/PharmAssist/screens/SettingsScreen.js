@@ -14,10 +14,14 @@ import { CheckBox } from 'react-native-elements'
 // From https://www.npmjs.com/package/react-native-modal-datetime-picker
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from 'moment';
+import LogoTitle from '../components/LogoTitle';
 
 export default class SettingsScreen extends React.Component {
   static navigationOptions = {
-    title: 'Settings',
+    headerTitle: <LogoTitle />,
+    headerStyle: {
+      backgroundColor: '#d8d8d8',
+    }
   };
 
   constructor(props){
@@ -42,36 +46,36 @@ export default class SettingsScreen extends React.Component {
 
   // These are parameters for the time pickers (morning, afternoon, evening, bedtime)
   _showDateTimePickerMorning = () => this.setState({ isDateTimePickerVisibleMorning: true });
- 
+
   _hideDateTimePickerMorning = () => this.setState({ isDateTimePickerVisibleMorning: false });
- 
+
   _handleDatePickedMorning = (date) => {
     this.morningSelect(date)
     this._hideDateTimePickerMorning();
   };
 
   _showDateTimePickerAfternoon = () => this.setState({ isDateTimePickerVisibleAfternoon: true });
- 
+
   _hideDateTimePickerAfternoon = () => this.setState({ isDateTimePickerVisibleAfternoon: false });
- 
+
   _handleDatePickedAfternoon = (date) => {
     this.afternoonSelect(date)
     this._hideDateTimePickerAfternoon();
   };
 
   _showDateTimePickerEvening = () => this.setState({ isDateTimePickerVisibleEvening: true });
- 
+
   _hideDateTimePickerEvening = () => this.setState({ isDateTimePickerVisibleEvening: false });
- 
+
   _handleDatePickedEvening = (date) => {
     this.eveningSelect(date)
     this._hideDateTimePickerEvening();
   };
 
   _showDateTimePickerBedtime = () => this.setState({ isDateTimePickerVisibleBedtime: true });
- 
+
   _hideDateTimePickerBedtime = () => this.setState({ isDateTimePickerVisibleBedtime: false });
- 
+
   _handleDatePickedBedtime = (date) => {
     this.bedtimeSelect(date)
     this._hideDateTimePickerBedtime();
@@ -101,7 +105,7 @@ export default class SettingsScreen extends React.Component {
     // console.log(this.settings);
   }
 
-  
+
   // this.props.navigation.dispatch(navigateAction);
   morningSelect(date)
   {
@@ -127,7 +131,7 @@ export default class SettingsScreen extends React.Component {
     this.settings[6] = bedtimetime
     // console.log(this.settings);
   }
-  
+
   render() {
   	return (
       <View style={styles.contentContainer}>
@@ -136,7 +140,7 @@ export default class SettingsScreen extends React.Component {
         </Text>
         <CheckBox textStyle={styles.boxFont} containerStyle={styles.checkBox} size={15} title="Ring" checked={this.state.ring} onPress={() => this.ringCheckbox()}/>
         <CheckBox textStyle={styles.boxFont} containerStyle={styles.checkBox} size={15} title="Vibrate" checked = {this.state.vibrate} onPress={() => this.vibrateCheckbox()}/>
-        
+
         <Text style={styles.settingsfont}>
         Set snooze time
         </Text>
@@ -148,7 +152,7 @@ export default class SettingsScreen extends React.Component {
           <Picker.Item label="15" value="15" />
           <Picker.Item label="30" value="30" />
         </Picker>
-        
+
         <Text style={styles.subheaderfont}>
         Update medication times
         </Text>
@@ -197,7 +201,7 @@ export default class SettingsScreen extends React.Component {
             mode={'time'}
           />
         </View>
-        <Button 
+        <Button
               title="Save Settings"
               color="#19a319"
               onPress={() => this.props.navigation.navigate('Home', {

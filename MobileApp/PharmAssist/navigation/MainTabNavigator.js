@@ -1,6 +1,6 @@
 import React from 'react';
 import { Platform, Image } from 'react-native';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import { createStackNavigator, createBottomTabNavigator, BottomTabBar } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
@@ -22,6 +22,15 @@ HomeStack.navigationOptions = ({navigation})=> {
   let { routeName } = navigation.state.routes[navigation.state.index];
   let navigationOptions = {
     tabBarLabel: 'Home',
+    tabBarOptions: {
+      style: {
+        backgroundColor: '#d8d8d8',
+        },
+      labelStyle: {
+        fontSize: 12,
+        color: '#54B864',
+        }
+      },
     tabBarIcon: ({ focused }) => (
       <TabBarIcon
         focused={focused}
@@ -45,17 +54,26 @@ const LinksStack = createStackNavigator({
 
 LinksStack.navigationOptions = {
   tabBarLabel: 'Scanner',
+  tabBarOptions: {
+    style: {
+      backgroundColor: '#d8d8d8',
+      },
+    labelStyle: {
+      fontSize: 12,
+      color: '#54B864',
+      }
+    },
   tabBarIcon: ({focused}) => (
     focused ?
     <Image
       style={{height:26}}
-      source={require('../assets/images/camerablue.jpg')}
+      source={require('../assets/images/cameragreen.png')}
       resizeMode='contain'
       />
       :
       <Image
       style={{height:26}}
-      source={require('../assets/images/camerawhite.jpg')}
+      source={require('../assets/images/camerawhite.png')}
       resizeMode='contain'
       />
       )
@@ -67,12 +85,29 @@ const SettingsStack = createStackNavigator({
 
 SettingsStack.navigationOptions = {
   tabBarLabel: 'Settings',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === 'ios' ? `ios-options${focused ? '' : '-outline'}` : 'md-options'}
-    />
-  ),
+  tabBarOptions: {
+    style: {
+      backgroundColor: '#d8d8d8',
+      },
+    labelStyle: {
+      fontSize: 12,
+      color: '#54B864',
+      }
+    },
+    tabBarIcon: ({focused}) => (
+      focused ?
+      <Image
+        style={{height:26}}
+        source={require('../assets/images/settings.png')}
+        resizeMode='contain'
+        />
+        :
+        <Image
+        style={{height:26}}
+        source={require('../assets/images/settings2.png')}
+        resizeMode='contain'
+        />
+        )
 };
 
 export default createBottomTabNavigator({

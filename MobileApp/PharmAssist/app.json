@@ -10,7 +10,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
-      "image": "./assets/images/pill-image.png",
+      "image": "./assets/images/pill.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
