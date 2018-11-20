@@ -190,7 +190,7 @@ export default class HomeScreen extends React.Component {
             // link (optional) (string) — external link to open when notification is selected.
           }
         }
-        var snoozeTime = new Date().getTime() + (settings[2] * 1000)
+        var snoozeTime = new Date().getTime() + (settings[2] * 1000) // should be * 60000 for a minute this is x 1 second
         var schedulingOptions = { time: snoozeTime, }
         Notifications.scheduleLocalNotificationAsync(notification, schedulingOptions);
         this.props.navigation.setParams({MedInfo: null})
@@ -325,10 +325,12 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         {(qrCode != null)? patientView : initialScreen}
-        {/*}<Button
+        <Button
               title="Go to Alerts"
-              onPress={() => this.props.navigation.navigate('Alerts'
-            )}/>*/}
+              onPress={() => this.props.navigation.navigate('Alerts',{
+                Info: {Drug: "drugList[1]",Times: 3,Taken: false, Ind: 1},
+              }
+            )}/>
       </View>
     );
   }
