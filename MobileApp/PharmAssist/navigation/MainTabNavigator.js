@@ -32,14 +32,18 @@ HomeStack.navigationOptions = ({navigation})=> {
         }
       },
     tabBarIcon: ({ focused }) => (
-      <TabBarIcon
-        focused={focused}
-        name={
-          Platform.OS === 'ios'
-            ? `ios-information-circle${focused ? '' : '-outline'}`
-            : 'md-information-circle'
-        }
-      />
+      focused ?
+      <Image
+        style={{height:26}}
+        source={require('../assets/images/home2.png')}
+        resizeMode='contain'
+        />
+        :
+        <Image
+        style={{height:26}}
+        source={require('../assets/images/home1.png')}
+        resizeMode='contain'
+        />
     ),
   };
   if (routeName === 'Alerts') {

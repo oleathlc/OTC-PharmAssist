@@ -252,11 +252,9 @@ export default class HomeScreen extends React.Component {
     <View style={styles.medsContainer}>
     {/* //First scrollbox */}
     <View style={styles.upcomingContainer1}>
-    <Text style={styles.subheaderfont}>My meds</Text>
+    <Text style={styles.subheaderfont}>Today's meds</Text>
         <ScrollView style={styles.meds}>
         {(medDict != null) ? medDict.map((item) => {
-        // console.log(item);
-        //These need to be sorted, currently order in dict
         if (item.Taken == false){
           return <Text style={styles.item}>{item.Drug+" "+notificationSettings[item.Times]}</Text>
         } else {
@@ -329,12 +327,12 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         {(qrCode != null)? patientView : initialScreen}
-        <Button
+        {/* <Button
               title="Go to Alerts"
               onPress={() => this.props.navigation.navigate('Alerts',{
                 Info: {Drug: "drugList[1]",Times: 3,Taken: false, Ind: 1},
               }
-            )}/>
+            )}/> */}
       </View>
     );
   }
@@ -352,6 +350,7 @@ const styles = StyleSheet.create({
   },
   tableheadfont: {
     fontWeight: 'bold',
+    color: 'white',
     fontSize: 16,
   },
   tablefont: {
@@ -366,7 +365,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
   },
   headrow: {
-    backgroundColor: '#75d1ff',
+    backgroundColor: '#54B864',
     borderColor: '#2a4944',
     borderBottomWidth: 1,
     borderTopWidth: 1,
@@ -384,19 +383,19 @@ const styles = StyleSheet.create({
   upcomingContainer1: {
     paddingRight: 20,
     paddingLeft: 20,
-    height: 200,
+    height: 250,
     paddingBottom: 10,
   },
   upcomingContainer2: {
     paddingRight: 20,
     paddingLeft: 20,
-    height: 200,
+    height: 250,
   },
   meds:{
     margin: 2,
     borderColor: '#2a4944',
     borderWidth: 1,
-    backgroundColor: '#e8f7ff',
+    backgroundColor: '#fcfffc',
     borderRadius: 5,
   },
   noSettings: {
@@ -424,12 +423,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignItems: 'center',
     padding: 5,
-    fontSize: 20,
-    margin: 2,
-    borderColor: '#2a4944',
+    fontSize: 18,
+    color: 'white',
+    margin: 4,
+    borderColor: 'black',
     borderWidth: 1,
     borderRadius: 5,
-    backgroundColor: '#80d4ff',
+    backgroundColor: '#54B864',
     fontFamily: 'Roboto',
   },
    itemTaken: {
@@ -438,12 +438,12 @@ const styles = StyleSheet.create({
      textAlign: 'center',
      alignItems: 'center',
      padding: 5,
-     fontSize: 20,
-     margin: 2,
-     borderColor: '#2a4944',
+     fontSize: 18,
+     margin: 4,
+     borderColor: '#4c4c4c',
      borderWidth: 1,
      borderRadius: 5,
-     backgroundColor: '#6c7584',
+     backgroundColor: '#cccccc',
      fontFamily: 'Roboto',
     }
 });

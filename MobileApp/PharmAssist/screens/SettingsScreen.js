@@ -141,25 +141,26 @@ export default class SettingsScreen extends React.Component {
         <CheckBox textStyle={styles.boxFont} containerStyle={styles.checkBox} size={15} title="Ring" checked={this.state.ring} onPress={() => this.ringCheckbox()}/>
         <CheckBox textStyle={styles.boxFont} containerStyle={styles.checkBox} size={15} title="Vibrate" checked = {this.state.vibrate} onPress={() => this.vibrateCheckbox()}/>
 
-        <Text style={styles.settingsfont}>
+        <Text style={styles.subheaderfont}>
         Set snooze time
         </Text>
+        <View style={styles.picker}>
         <Picker
           selectedValue={this.state.snooze}
-          style={{ height: 50, width: 100 }}
+          style={{ height: 30, width: 100}}
           onValueChange={(itemValue, itemIndex) => this.setState({snooze: itemValue},this.snoozeSelect(itemValue))}>
           <Picker.Item label="10" value="10" />
           <Picker.Item label="15" value="15" />
           <Picker.Item label="30" value="30" />
         </Picker>
-
+        </View>
         <Text style={styles.subheaderfont}>
         Update medication times
         </Text>
-
+        <Text style={styles.currenttimefont}>Morning reminder time: {this.settings[3]}</Text>
         <View style={styles.timebutton1}>
           <TouchableOpacity onPress={this._showDateTimePickerMorning}>
-          <Text style={styles.boxFont}>Choose morning time</Text>
+          <Text style={styles.boxFont}>Set new morning time</Text>
           </TouchableOpacity>
           <DateTimePicker
             isVisible={this.state.isDateTimePickerVisibleMorning}
@@ -168,9 +169,10 @@ export default class SettingsScreen extends React.Component {
             mode={'time'}
           />
         </View>
+        <Text style={styles.currenttimefont}>Afternoon reminder time: {this.settings[4]}</Text>
         <View style={styles.timebutton2}>
           <TouchableOpacity onPress={this._showDateTimePickerAfternoon}>
-            <Text style={styles.boxFont}>Choose afternoon time</Text>
+            <Text style={styles.boxFont}>Set new afternoon time</Text>
           </TouchableOpacity>
           <DateTimePicker style={styles.timebutton}
             isVisible={this.state.isDateTimePickerVisibleAfternoon}
@@ -179,9 +181,10 @@ export default class SettingsScreen extends React.Component {
             mode={'time'}
           />
         </View>
+        <Text style={styles.currenttimefont}>Evening reminder time: {this.settings[5]}</Text>
         <View style={styles.timebutton3}>
           <TouchableOpacity onPress={this._showDateTimePickerEvening}>
-            <Text style={styles.boxFont}>Choose evening time</Text>
+            <Text style={styles.boxFont}>Set new evening time</Text>
           </TouchableOpacity>
           <DateTimePicker style={styles.timebutton}
             isVisible={this.state.isDateTimePickerVisibleEvening}
@@ -190,9 +193,10 @@ export default class SettingsScreen extends React.Component {
             mode={'time'}
           />
         </View>
+        <Text style={styles.currenttimefont}>Before bed reminder time: {this.settings[6]}</Text>
         <View style={styles.timebutton4}>
           <TouchableOpacity onPress={this._showDateTimePickerBedtime}>
-            <Text style={styles.boxFont}>Choose bedtime</Text>
+            <Text style={styles.boxFont}>Set new before bed time </Text>
           </TouchableOpacity>
           <DateTimePicker style={styles.timebutton}
             isVisible={this.state.isDateTimePickerVisibleBedtime}
@@ -215,45 +219,63 @@ export default class SettingsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#fcfffc',
+  },
+  picker: {
+    borderColor:'black',
+    borderWidth:1,
+    width: 100,
+    backgroundColor: '#fcfffc',
+    marginLeft: 5,
+    marginTop: 5,
   },
   checkBox:{
     borderColor:'black',
     borderWidth:1,
     padding:5,
-    backgroundColor: '#e6eeff'
+    backgroundColor: '#fcfffc',
+    width: 150,
   },
   boxFont: {
     fontFamily:'Roboto',
     color:'black',
     fontWeight: '200',
   },
+  currenttimefont: {
+    fontSize: 16,
+    marginLeft: 5,
+  },
   contentContainer: {
-    padding: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   subheaderfont: {
     fontSize: 20,
+    paddingTop:15,
   },
   timebutton1: {
     padding: 5,
     margin: 5,
     borderWidth: 1,
     borderRadius: 3,
-    backgroundColor: '#e6eeff',
+    backgroundColor: '#fcfffc',
+    width: 200,
   },
   timebutton2: {
     padding: 5,
     margin: 5,
     borderWidth: 1,
     borderRadius: 3,
-    backgroundColor: '#e6eeff',
+    backgroundColor: '#fcfffc',
+    width: 200,
   },
   timebutton3: {
     padding: 5,
     margin: 5,
     borderWidth: 1,
     borderRadius: 3,
-    backgroundColor: '#e6eeff',
+    backgroundColor: '#fcfffc',
+    width: 200,
   },
   timebutton4: {
     padding: 5,
@@ -261,6 +283,7 @@ const styles = StyleSheet.create({
     marginBottom:20,
     borderWidth: 1,
     borderRadius: 3,
-    backgroundColor: '#e6eeff',
+    backgroundColor: '#fcfffc',
+    width: 200,
   },
 });

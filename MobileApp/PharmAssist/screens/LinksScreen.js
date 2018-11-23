@@ -104,7 +104,10 @@ render() {
       <View style={styles.bottomBar}>
         <TouchableOpacity style={styles.url} onPress={this._handlePressUrl}>
           <Text style={styles.urlText}>
-            QR Code scanned! {"\n"} Click to add!
+            QR Code scanned!
+          </Text>
+          <Text style={styles.urlText2}>
+            Tap here to add your prescription.
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -141,6 +144,11 @@ const styles = StyleSheet.create({
   urlText: {
     color: '#fff',
     fontSize: 30,
+    textAlign: 'center',
+  },
+  urlText2: {
+    color: '#fff',
+    fontSize: 15,
     textAlign: 'center',
   },
   cancelButton: {
