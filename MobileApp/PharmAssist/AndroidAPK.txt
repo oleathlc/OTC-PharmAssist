@@ -1,0 +1,8 @@
+[11:40:57] Retreiving Android keystore for @oleathlc/PharmAssist
+[11:40:58] Writing keystore to /Users/clawlor90/Documents/OTC-PharmAssist/MobileApp/PharmAssist/PharmAssist.jks...
+[11:40:58] Done writing keystore to disk.
+[11:40:58] Save these important values as well:
+
+  Keystore password: 2351e76c14a146068dd31c2981441917
+  Key alias:         QG9sZWF0aGxjL1BoYXJtQXNzaXN0
+  Key password:      71e3b263322e4ccfac701cf2631dd246
